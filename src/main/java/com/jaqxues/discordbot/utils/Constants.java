@@ -12,7 +12,7 @@ public class Constants {
     public static final String TOKEN_TXT_PATH = "D:\\Documents\\Jacques\\CodeProjects\\IdeaProjects\\DiscordBot\\Redacted\\Token.txt";
     public static final String IDS_PROVIDER_JSON = "D:\\Documents\\Jacques\\CodeProjects\\IdeaProjects\\DiscordBot\\Redacted\\IdsProvider.json";
     public static final String SESSION_MANAGER_JSON = "D:\\Documents\\Jacques\\CodeProjects\\IdeaProjects\\DiscordBot\\Redacted\\SessionManager.json";
-    public static final String LOGBACK_CONFIG_PATH = "D:\\Documents\\Jacques\\CodeProjects\\IdeaProjects\\DiscordBot\\src\\main\\resources\\chapters\\configuration\\logback.xml";
+    public static final String LOGBACK_CONFIG_PATH = "chapters/configuration/logback.xml";
     public static final String BOT_VERSION = "1.0.0.0b";
 
     // ModulePack Compiler Constants
