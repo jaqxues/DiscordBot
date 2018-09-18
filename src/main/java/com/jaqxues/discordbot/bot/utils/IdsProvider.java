@@ -7,7 +7,6 @@ import com.jaqxues.discordbot.utils.Constants;
 import com.jaqxues.discordbot.utils.FileUtils;
 import com.jaqxues.discordbot.utils.JsonSingletons;
 import com.jaqxues.discordbot.utils.LogUtils;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -22,8 +21,10 @@ import java.util.Map;
  */
 
 public class IdsProvider {
+
     public static final long OWNER_USER_ID = 368650055210500101L;
     public static final long OWNER_GUILD_ID = 434630982822395904L;
+
     private static Map<Integer, List<Long>> lockIdsMap;
 
     public static void init() {

@@ -1,9 +1,7 @@
 package com.jaqxues.discordbot.bot.commands;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.jaqxues.discordbot.bot.utils.BaseCommand;
-import com.jaqxues.discordbot.bot.utils.DiscordUtils;
+import com.jaqxues.discordbot.bot.utils.MessageFactory;
 import com.jaqxues.discordbot.utils.Constants;
 import com.jaqxues.discordbot.utils.FileUtils;
 import com.jaqxues.discordbot.utils.LogUtils;
@@ -12,17 +10,14 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.util.function.Consumer;
 
 /**
  * This file was created by Jacques (jaqxues) in the Project DiscordBot.<br>
@@ -177,20 +172,25 @@ public class CompileModPackCommand implements BaseCommand {
                 }
             } catch (Exception e) {
                 LogUtils.getMainLogger().error("Error while tracking input request", e);
-                channel.sendMessage("Uhm... Something weird went wrong...???").queue();
+                MessageFactory.errorEmbed(
+                        channel,
+                        "Unknown Exception",
+                        "An unknown exception has been thrown while running the ModulePack Compiler",
+                        e
+                );
             }
         }).start();
     }
 
     private static String getKeyStoreInfo(String key) {
-        JSONObject json = FileUtils.fileToJSON("D:\\Documents\\Jacques\\CodeProjects\\IdeaProjects\\SnapTools\\jaqxues\\SnapTools\\KeysCertificates\\KeyStore\\KeyStore.json");
+        JSONObject json = FileUtils.fileToJSON(Constants.KEYSTORE_JSON);
         if (json == null)
             throw new IllegalStateException("Could not read the KeyStore.json File");
         return json.getJSONObject("KeyStore").getString(key);
     }
 
     private static String getKeyPasswordFromAlias(String alias) {
-        JSONObject json = FileUtils.fileToJSON("D:\\Documents\\Jacques\\CodeProjects\\IdeaProjects\\SnapTools\\jaqxues\\SnapTools\\KeysCertificates\\KeyStore\\KeyStore.json");
+        JSONObject json = FileUtils.fileToJSON(Constants.KEYSTORE_JSON);
         if (json == null)
             throw new IllegalStateException("Could not read the KeyStore.json File");
         for (Object o : json.getJSONArray("Keys")) {
@@ -227,12 +227,24 @@ public class CompileModPackCommand implements BaseCommand {
     }
 
     @Override
-    public void onInvoke(@Nullable String str, MessageReceivedEvent event) {
-        if (DiscordUtils.checkBotOwner(event) || DiscordUtils.requiresParams(str, event) || str == null)
-            return;
+    public boolean requiresInput() {
+        return true;
+    }
+
+    @Override
+    public boolean ownerOnly() {
+        return true;
+    }
+
+    @Override
+    public void onInvoke(@NotNull String str, MessageReceivedEvent event) {
         str = str.toLowerCase();
         if (str.startsWith("get example")) {
-            event.getChannel().sendMessage("ModulePack Compiler Command Example:\n\n```.mp 10.26.5.0 : Debug : Premium : 1.0.0.0 : Beta : Development : SignPack : Master : Adb Push```").queue();
+            MessageFactory.basicSuccessEmbed(
+                    event.getChannel(),
+                    "ModulePack Compiler Command Example",
+                    "\n\n```.mp 10.26.5.0 : Debug : Premium : 1.0.0.0 : Beta : Development : SignPack : Master : Adb Push```"
+            );
             return;
         } else if (str.startsWith("set default")) {
             str = str.substring(11);
@@ -240,7 +252,11 @@ public class CompileModPackCommand implements BaseCommand {
             defaultParams = str;
             return;
         } else if (str.startsWith("get default")) {
-            event.getChannel().sendMessage("ModulePack Compiler Command Default Parameters:\n\n```.mp " + getDefaultParams() + "```").queue();
+            MessageFactory.basicSuccessEmbed(
+                    event.getChannel(),
+                    "ModulePack Compile Command Default Parameters",
+                    "\n\n\n\n```.mp " + getDefaultParams() + "```"
+            );
             return;
         } else if (str.startsWith("d")) {
             str = defaultParams;
@@ -250,7 +266,12 @@ public class CompileModPackCommand implements BaseCommand {
             input = parseParams(str);
         } catch (IllegalArgumentException e) {
             LogUtils.getMainLogger().error("Error while parsing input \"" + str + "\"", e);
-            event.getChannel().sendMessage("IllegalArgumentException, Message:" + e.getMessage() + "\n\nCould not parse Parameters").queue();
+            MessageFactory.errorEmbed(
+                    event.getChannel(),
+                    "IllegalArgumentException",
+                    "The provided input could not be parsed as Parameters",
+                    e
+            );
             return;
         }
 
@@ -261,7 +282,12 @@ public class CompileModPackCommand implements BaseCommand {
             trackInput(compileProcess, input, event.getChannel());
         } catch (Throwable t) {
             LogUtils.getMainLogger().error("Could not execute the PackCompiler", t);
-            event.getChannel().sendMessage("Could not execute the ModulePack Compiler... " + t.getMessage()).queue();
+            MessageFactory.errorEmbed(
+                    event.getChannel(),
+                    "Could not execute ModulePack Compiler",
+                    "An unknown exception has been thrown while starting the ModulePack Compiler script"
+                    , t
+            );
         }
     }
 }

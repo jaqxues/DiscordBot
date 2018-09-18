@@ -21,7 +21,11 @@ dependencies {
     }
 
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+
+    implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.google.code.gson:gson:2.8.5'
+    // Colored Output
+    compile group: 'com.diogonunes', name: 'JCDP', version: '2.0.3.1'
 }
 
 jar {

@@ -1,10 +1,15 @@
 package com.jaqxues.discordbot.bot.utils;
 
+import com.jaqxues.discordbot.utils.LogUtils;
+
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
+import net.dv8tion.jda.core.exceptions.PermissionException;
 
 import java.util.List;
 
@@ -49,23 +54,28 @@ public class DiscordUtils {
      */
     public static boolean checkBotOwner(MessageReceivedEvent event) {
         if (!(event.getAuthor().getIdLong() == IdsProvider.OWNER_USER_ID)) {
-            event.getChannel().sendMessage("Only the Bot Owner is able to perform this action.").queue();
+            MessageFactory.basicErrorEmbed(
+                    event.getChannel(),
+                    "Bot Owner Action",
+                    "Only the Bot Owner can perform this action"
+            );
             return true;
         }
         return false;
     }
 
-    /**
-     * Method to check if there are no parameters for this command. If so, send a small message to help the user
-     *
-     * @param params Parameters to check if they exist
-     * @param event The corresponding MessageReceivedEvent
-     * @return True if the event has been consumed.
-     */
-    public static boolean requiresParams(String params, MessageReceivedEvent event) {
-        if (params == null || params.isEmpty()) {
-            event.getChannel().sendMessage(event.getAuthor().getAsMention() + "This method is usually called with parameters. If you need help, you can just append \"help\" to this command").queue();
+    public static void deleteMessage(Message message) {
+        LogUtils.logMessage(message, false);
+        message.delete().queue();
+    }
+
+    public static boolean tryDeleteMessage(Message message) {
+        LogUtils.logMessage(message, false);
+        try {
+            message.delete().queue();
             return true;
+        } catch (InsufficientPermissionException e) {
+            LogUtils.getMainLogger().error("Unable to delete Message " + message, e);
         }
         return false;
     }

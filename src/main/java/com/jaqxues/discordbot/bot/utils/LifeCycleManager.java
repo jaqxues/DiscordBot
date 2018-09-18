@@ -22,7 +22,9 @@ public class LifeCycleManager {
         IdsProvider.init();
     }
 
-    public static void refresh() {}
+    public static void refresh() {
+
+    }
 
     public static void onShutdown(JDA jda) {
         jda.shutdown();

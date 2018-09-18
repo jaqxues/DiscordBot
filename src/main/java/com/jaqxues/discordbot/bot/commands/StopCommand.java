@@ -1,12 +1,12 @@
 package com.jaqxues.discordbot.bot.commands;
 
 import com.jaqxues.discordbot.bot.utils.BaseCommand;
-import com.jaqxues.discordbot.bot.utils.DiscordUtils;
 import com.jaqxues.discordbot.bot.utils.LifeCycleManager;
+import com.jaqxues.discordbot.bot.utils.MessageFactory;
 
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,10 +40,22 @@ public class StopCommand implements BaseCommand {
     }
 
     @Override
-    public void onInvoke(@Nullable String str, MessageReceivedEvent event) {
-        if (!DiscordUtils.checkBotOwner(event))
-            return;
-        event.getChannel().sendMessage("Bot is shutting down, good night " + event.getAuthor().getName() + ". :)").queue();
+    public boolean requiresInput() {
+        return false;
+    }
+
+    @Override
+    public boolean ownerOnly() {
+        return true;
+    }
+
+    @Override
+    public void onInvoke(@NotNull String str, MessageReceivedEvent event) {
+        MessageFactory.basicSuccessEmbed(
+                event.getChannel(),
+                "Goodnight " + event.getAuthor().getName() + " :)",
+                "Bot is shutting down"
+        );
         LifeCycleManager.onShutdown(event.getJDA());
     }
 }

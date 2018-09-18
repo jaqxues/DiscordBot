@@ -1,19 +1,27 @@
 package com.jaqxues.discordbot.bot;
 
 import com.jaqxues.discordbot.bot.commands.CompileModPackCommand;
+import com.jaqxues.discordbot.bot.commands.DeleteMessagesCommand;
+import com.jaqxues.discordbot.bot.commands.ListCommand;
+import com.jaqxues.discordbot.bot.commands.QuickPollCommand;
 import com.jaqxues.discordbot.bot.commands.StopCommand;
+import com.jaqxues.discordbot.bot.commands.StringUtilsCommand;
 import com.jaqxues.discordbot.bot.utils.BaseCommand;
 import com.jaqxues.discordbot.bot.utils.CustomEventAdapter;
 import com.jaqxues.discordbot.bot.utils.DiscordUtils;
 import com.jaqxues.discordbot.bot.utils.IdsProvider;
+import com.jaqxues.discordbot.bot.utils.MessageFactory;
 import com.jaqxues.discordbot.utils.LogUtils;
 
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+import java.lang.ref.WeakReference;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import static com.jaqxues.discordbot.bot.utils.Variables.commandPrefix;
+import static com.jaqxues.discordbot.bot.utils.Variables.lockLevel;
 
 /**
  * This file was created by Jacques (jaqxues) in the Project DiscordBot.<br>
@@ -22,10 +30,17 @@ import static com.jaqxues.discordbot.bot.utils.Variables.commandPrefix;
 
 public class EventDispatcher extends CustomEventAdapter {
     private final HashMap<String, BaseCommand> listeners = new LinkedHashMap<>();
-    private static int lockLevel = Integer.MAX_VALUE;
 
     public EventDispatcher() {
         setListeners();
+    }
+
+    private static boolean isCommand(String message) {
+        return message.startsWith(commandPrefix);
+    }
+
+    private static boolean isHelpCommand(String message) {
+        return message.toLowerCase().startsWith("help");
     }
 
     @Override
@@ -43,32 +58,43 @@ public class EventDispatcher extends CustomEventAdapter {
         }
     }
 
-    private static boolean isCommand(String message) {
-        return message.startsWith(commandPrefix);
-    }
-
-    private static boolean isHelpCommand(String message) {
-        return message.toLowerCase().startsWith("help");
-    }
-
     private void invokeListener(String[] cmd, MessageReceivedEvent event, boolean isHelpCommand) {
         if (listeners.containsKey(cmd[0])) {
             if (isHelpCommand)
                 DiscordUtils.sendHelpCommand(commandPrefix, listeners.get(cmd[0]), event.getChannel());
             else {
-                if (cmd.length == 2)
-                    listeners.get(cmd[0]).onInvoke(cmd[1], event);
-                else
-                    listeners.get(cmd[0]).onInvoke(null, event);
+                BaseCommand command = listeners.get(cmd[0]);
+
+                if (command.ownerOnly() && DiscordUtils.checkBotOwner(event))
+                    return;
+
+                if (cmd.length == 2 && cmd[1] != null && !cmd[1].isEmpty()) {
+                    command.onInvoke(cmd[1], event);
+                } else {
+                    if (command.requiresInput()) {
+                        MessageFactory.basicWarnEmbed(
+                                event.getChannel(),
+                                "No Parameters?",
+                                "This command is usually called with parameters. If you need information about how this command works, append \"help\" to this command"
+                        );
+                        return;
+                    }
+                    command.onInvoke("", event);
+                }
             }
         }
     }
 
     private void setListeners() {
         listeners.clear();
+        WeakReference<EventDispatcher> reference = new WeakReference<>(this);
         BaseCommand[] cmds = new BaseCommand[]{
                 new CompileModPackCommand(),
-                new StopCommand()
+                new DeleteMessagesCommand(),
+                new ListCommand(reference),
+                new QuickPollCommand(),
+                new StopCommand(),
+                new StringUtilsCommand()
         };
         for (BaseCommand cmd : cmds) {
             if (listeners.containsKey(cmd.getAlias())) {
@@ -77,5 +103,9 @@ public class EventDispatcher extends CustomEventAdapter {
             }
             listeners.put(cmd.getAlias(), cmd);
         }
+    }
+
+    public Collection<BaseCommand> getCommands() {
+        return listeners.values();
     }
 }
