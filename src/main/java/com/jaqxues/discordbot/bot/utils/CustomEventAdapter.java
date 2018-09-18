@@ -22,5 +22,7 @@ public class CustomEventAdapter implements EventListener {
     public void onEvent(Event event) {
         if (event instanceof MessageReceivedEvent)
             onMessageReceived((MessageReceivedEvent) event);
+        else
+            StatsManager.otherEvent();
     }
 }

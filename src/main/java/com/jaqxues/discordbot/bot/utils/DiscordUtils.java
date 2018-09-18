@@ -9,11 +9,8 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.InsufficientPermissionException;
-import net.dv8tion.jda.core.exceptions.PermissionException;
 
 import java.util.List;
-
-import javax.xml.soap.Text;
 
 /**
  * This file was created by Jacques (jaqxues) in the Project DiscordBot.<br>
@@ -22,7 +19,7 @@ import javax.xml.soap.Text;
 
 public class DiscordUtils {
 
-    public static TextChannel getOwnerBotChannel(JDA jda) {
+    static TextChannel getOwnerBotChannel(JDA jda) {
         return jda.getGuildById(434630982822395904L).getTextChannelById(461621973571731458L);
     }
 

@@ -5,6 +5,7 @@ package com.jaqxues.discordbot.utils;
  * Date: 16.09.2018 - Time 21:55.
  */
 
+@SuppressWarnings("unused")
 public class Assert {
     public static void notNull(String errorMessage, Object... args) throws IllegalArgumentException {
         for (Object obj : args) {

@@ -3,7 +3,6 @@ package com.jaqxues.discordbot.bot.utils;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -36,26 +35,26 @@ public interface BaseCommand {
      * This list of Strings will be formatted following these rules.
      *
      * <table>
-     *     <tr>
-     *         <th>Rule</th>
-     *         <th>Effect</th>
-     *     </tr>
-     *     <tr>
-     *         <td>----</td>
-     *         <td>This is used to split the Field's Title and Text</td>
-     *     </tr>
-     *     <tr>
-     *         <td>_inline_</td>
-     *         <td>This is used <strong>at the end of the String</strong> to set the field inline</td>
-     *     </tr>
-     *     <tr>
-     *         <td>_blank_</td>
-     *         <td>This is used <strong>at the beginning of the String</strong> to add a new Blank Field to the Embed</td>
-     *     </tr>
-     *     <tr>
-     *         <td>===</td>
-     *         <td>Replaced by {@link Variables#commandPrefix} and {@link BaseCommand#getAlias()} </td>
-     *     </tr>
+     * <tr>
+     * <th>Rule</th>
+     * <th>Effect</th>
+     * </tr>
+     * <tr>
+     * <td>----</td>
+     * <td>This is used to split the Field's Title and Text</td>
+     * </tr>
+     * <tr>
+     * <td>_inline_</td>
+     * <td>This is used <strong>at the end of the String</strong> to set the field inline</td>
+     * </tr>
+     * <tr>
+     * <td>_blank_</td>
+     * <td>This is used <strong>at the beginning of the String</strong> to add a new Blank Field to the Embed</td>
+     * </tr>
+     * <tr>
+     * <td>===</td>
+     * <td>Replaced by {@link Variables#commandPrefix} and {@link BaseCommand#getAlias()} </td>
+     * </tr>
      * </table>
      *
      * @return A list of Strings that will be used to build a help message in form of a Discord Embed.

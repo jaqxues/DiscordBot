@@ -22,6 +22,7 @@ import java.io.IOException;
  * Date: 17.09.2018 - Time 12:57.
  */
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class FileUtils {
     public static JsonElement fileToJson(String path) {
         return fileToJson(new File(path));

@@ -3,7 +3,9 @@ package com.jaqxues.discordbot.bot;
 import com.jaqxues.discordbot.bot.commands.CompileModPackCommand;
 import com.jaqxues.discordbot.bot.commands.DeleteMessagesCommand;
 import com.jaqxues.discordbot.bot.commands.ListCommand;
+import com.jaqxues.discordbot.bot.commands.LockCommand;
 import com.jaqxues.discordbot.bot.commands.QuickPollCommand;
+import com.jaqxues.discordbot.bot.commands.StatsCommand;
 import com.jaqxues.discordbot.bot.commands.StopCommand;
 import com.jaqxues.discordbot.bot.commands.StringUtilsCommand;
 import com.jaqxues.discordbot.bot.utils.BaseCommand;
@@ -11,6 +13,7 @@ import com.jaqxues.discordbot.bot.utils.CustomEventAdapter;
 import com.jaqxues.discordbot.bot.utils.DiscordUtils;
 import com.jaqxues.discordbot.bot.utils.IdsProvider;
 import com.jaqxues.discordbot.bot.utils.MessageFactory;
+import com.jaqxues.discordbot.bot.utils.StatsManager;
 import com.jaqxues.discordbot.utils.LogUtils;
 
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -45,6 +48,7 @@ public class EventDispatcher extends CustomEventAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        StatsManager.messageEvent();
         if (isCommand(event.getMessage().getContentRaw())) {
             if (lockLevel >= 4 || IdsProvider.checkLock(lockLevel, event)) {
                 String[] cmd = event.getMessage().getContentRaw()
@@ -59,6 +63,7 @@ public class EventDispatcher extends CustomEventAdapter {
     }
 
     private void invokeListener(String[] cmd, MessageReceivedEvent event, boolean isHelpCommand) {
+        StatsManager.invokedCommand();
         if (listeners.containsKey(cmd[0])) {
             if (isHelpCommand)
                 DiscordUtils.sendHelpCommand(commandPrefix, listeners.get(cmd[0]), event.getChannel());
@@ -92,7 +97,9 @@ public class EventDispatcher extends CustomEventAdapter {
                 new CompileModPackCommand(),
                 new DeleteMessagesCommand(),
                 new ListCommand(reference),
+                new LockCommand(),
                 new QuickPollCommand(),
+                new StatsCommand(),
                 new StopCommand(),
                 new StringUtilsCommand()
         };

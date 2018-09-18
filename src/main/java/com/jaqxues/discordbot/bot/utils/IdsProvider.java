@@ -22,12 +22,12 @@ import java.util.Map;
 
 public class IdsProvider {
 
-    public static final long OWNER_USER_ID = 368650055210500101L;
-    public static final long OWNER_GUILD_ID = 434630982822395904L;
+    static final long OWNER_USER_ID = 368650055210500101L;
+    private static final long OWNER_GUILD_ID = 434630982822395904L;
 
     private static Map<Integer, List<Long>> lockIdsMap;
 
-    public static void init() {
+    static void init() {
         JsonElement json = FileUtils.fileToJson(Constants.IDS_PROVIDER_JSON);
         if (json == null || !json.isJsonObject()) {
 
@@ -65,10 +65,6 @@ public class IdsProvider {
         lockIdsMap.put(2, lockIdsMap.get(0));
         lockIdsMap.put(3, lockIdsMap.get(1));
         LogUtils.getMainLogger().debug("Loaded default settings.");
-    }
-
-    public static List<Long> fromLockLevel(Integer lockLevel) {
-        return lockIdsMap.get(lockLevel);
     }
 
     public static boolean checkLock(Integer lockLevel, MessageReceivedEvent event) {

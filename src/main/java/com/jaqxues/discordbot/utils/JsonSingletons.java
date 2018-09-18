@@ -8,6 +8,7 @@ import com.google.gson.JsonParser;
  * Date: 16.09.2018 - Time 21:19.
  */
 
+@SuppressWarnings("unsued")
 public class JsonSingletons {
     private static JsonParser parser = new JsonParser();
     private static Gson gson = new Gson();

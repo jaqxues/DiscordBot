@@ -1,7 +1,6 @@
 package com.jaqxues.discordbot;
 
 import com.jaqxues.discordbot.bot.EventDispatcher;
-import com.jaqxues.discordbot.bot.utils.IdsProvider;
 import com.jaqxues.discordbot.bot.utils.LifeCycleManager;
 import com.jaqxues.discordbot.utils.Constants;
 import com.jaqxues.discordbot.utils.FileUtils;
@@ -11,7 +10,6 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Scanner;

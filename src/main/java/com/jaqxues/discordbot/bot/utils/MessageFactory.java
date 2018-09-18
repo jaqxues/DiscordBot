@@ -13,6 +13,7 @@ import java.util.Arrays;
  * Date: 18.09.2018 - Time 13:23.
  */
 
+@SuppressWarnings("unused")
 public class MessageFactory {
 
     public static void basicSuccessEmbed(MessageChannel channel, String title, @Nullable String message) {
