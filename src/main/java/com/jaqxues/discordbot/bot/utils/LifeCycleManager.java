@@ -1,6 +1,7 @@
 package com.jaqxues.discordbot.bot.utils;
 
 import com.jaqxues.discordbot.utils.Constants;
+import com.jaqxues.discordbot.utils.LogUtils;
 
 import net.dv8tion.jda.core.JDA;
 
@@ -18,12 +19,12 @@ public class LifeCycleManager {
      */
     public static void onStartUp(JDA jda) {
         DiscordUtils.getOwnerBotChannel(jda).sendMessage("Started Bot. (Version: " + Constants.BOT_VERSION + ")").queue();
-
+        IdsProvider.init();
     }
 
     public static void refresh() {}
 
     public static void onShutdown(JDA jda) {
-
+        jda.shutdown();
     }
 }

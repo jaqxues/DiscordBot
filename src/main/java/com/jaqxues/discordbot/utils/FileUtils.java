@@ -8,9 +8,11 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -29,10 +31,30 @@ public class FileUtils {
     public static JsonElement fileToJson(File file) {
         try (FileReader reader = new FileReader(file)) {
             return JsonSingletons.getParser().parse(reader);
+        } catch (FileNotFoundException e) {
+            LogUtils.getMainLogger().error("Could not find file", e);
         } catch (IOException e) {
-            LogUtils.getMainLogger().error("Could not read File " + file, e);
+            LogUtils.getMainLogger().error("Could not read file " + file, e);
         } catch (JsonParseException e) {
             LogUtils.getMainLogger().error("Could not parse Json" + e);
+        }
+        return null;
+    }
+
+    public static JSONObject fileToJSON(String path) {
+        try (FileReader reader = new FileReader(path)) {
+            StringBuilder builder = new StringBuilder();
+            int code;
+            while ((code = reader.read()) != -1) {
+                builder.append((char) code);
+            }
+            return new JSONObject(builder.toString());
+        } catch (FileNotFoundException e) {
+            LogUtils.getMainLogger().error("Could not find file " + path, e);
+        } catch (IOException e) {
+            LogUtils.getMainLogger().error("IO Exception", e);
+        } catch (JSONException e) {
+            LogUtils.getMainLogger().error("Could not parse JSON", e);
         }
         return null;
     }

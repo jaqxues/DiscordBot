@@ -1,6 +1,7 @@
 package com.jaqxues.discordbot;
 
 import com.jaqxues.discordbot.bot.EventDispatcher;
+import com.jaqxues.discordbot.bot.utils.IdsProvider;
 import com.jaqxues.discordbot.bot.utils.LifeCycleManager;
 import com.jaqxues.discordbot.utils.Constants;
 import com.jaqxues.discordbot.utils.FileUtils;
@@ -9,6 +10,9 @@ import com.jaqxues.discordbot.utils.LogUtils;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Scanner;
 import java.util.concurrent.Executors;
@@ -29,7 +33,7 @@ public class Main {
     public static void main(String[] args) {
         System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, Constants.LOGBACK_CONFIG_PATH);
         // Get Configuration (Bot Token and Command Prefix)
-        String token = getToken(args != null && args.length != 0);
+        String token = getToken(args);
 
         System.out.println("Building JDA instance");
         JDA jda;
@@ -57,10 +61,20 @@ public class Main {
         executor.scheduleAtFixedRate(LifeCycleManager::refresh, 1, 30, TimeUnit.MINUTES);
     }
 
-    private static String getToken(boolean fromBat) {
-        String token = FileUtils.readFile(Constants.TOKEN_TXT_PATH);
+    /**
+     * Takes care of getting the token for the bot. If the token could not be read from
+     * {@link Constants#TOKEN_TXT_PATH}, it asks for user input.
+     *
+     * @param args The arguments with which the Bot was started.
+     * @return The Bot Token that will be used to build the JDA instance.
+     */
+    private static String getToken(@Nullable String[] args) {
+        boolean fromBat = args != null && args.length != 0;
+        String token = FileUtils.readFile(
+                (fromBat) ? args[1] : Constants.TOKEN_TXT_PATH
+        );
         if (token == null || token.isEmpty()) {
-            LogUtils.getMainLogger().error("Could not properly read token. Requesting User Input");
+            LogUtils.getMainLogger().error("Could not read token. Requesting User Input");
             if (fromBat) {
                 LogUtils.getMainLogger().error("Started from bat. No User Input Possible");
                 throw new IllegalStateException();

@@ -6,8 +6,14 @@ package com.jaqxues.discordbot.utils;
  */
 
 public class Constants {
-    public static final String TOKEN_TXT_PATH = "D:\\Documents\\Jacques\\CodeProjects\\IdeaProjects\\DiscordBot\\src\\main\\resources\\Token.txt";
-    public static final String CONFIGURATION_PATH = "D:\\Documents\\Jacques\\CodeProjects\\IdeaProjects\\DiscordBot\\src\\main\\resources\\Configuration.json";
-    public static final String LOGBACK_CONFIG_PATH = "chapters/configuration/logback.xml";
+    /**
+     * A hardcoded String value that points to the Token.txt file
+     */
+    public static final String TOKEN_TXT_PATH = "D:\\Documents\\Jacques\\CodeProjects\\IdeaProjects\\DiscordBot\\Redacted\\Token.txt";
+    public static final String IDS_PROVIDER_JSON = "D:\\Documents\\Jacques\\CodeProjects\\IdeaProjects\\DiscordBot\\Redacted\\IdsProvider.json";
+    public static final String LOGBACK_CONFIG_PATH = "D:\\Documents\\Jacques\\CodeProjects\\IdeaProjects\\DiscordBot\\src\\main\\resources\\chapters\\configuration\\logback.xml";
     public static final String BOT_VERSION = "1.0.0.0b";
+
+    public static final String MODPACK_COMPILER_BAT = "D:\\Documents\\Jacques\\CodeProjects\\IdeaProjects\\SnapTools\\jaqxues\\ModulePackCompiler\\PackCompiler.bat";
+    public static final String KEYSTORE_JSON = "D:\\Documents\\Jacques\\CodeProjects\\IdeaProjects\\SnapTools\\jaqxues\\SnapTools\\KeysCertificates\\KeyStore\\KeyStore.json";
 }
