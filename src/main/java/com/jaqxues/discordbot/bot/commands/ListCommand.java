@@ -76,9 +76,10 @@ public class ListCommand implements BaseCommand {
                 .addBlankField(false);
         for (BaseCommand cmd : dispatcher.getCommands()) {
             builder.addField(
-                    cmd.getName() + "\t(*" + Variables.commandPrefix + cmd.getAlias() + "*)",
+                    cmd.getName() + "\t\t(*" + Variables.commandPrefix + cmd.getAlias() + "*)",
                     cmd.getDescription(),
                     false);
         }
+        event.getChannel().sendMessage(builder.build()).queue();
     }
 }

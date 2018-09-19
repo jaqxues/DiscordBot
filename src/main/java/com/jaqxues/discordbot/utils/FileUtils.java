@@ -1,11 +1,8 @@
 package com.jaqxues.discordbot.utils;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
@@ -30,8 +27,13 @@ public class FileUtils {
 
     @Nullable
     public static JsonElement fileToJson(File file) {
-        try (FileReader reader = new FileReader(file)) {
-            return JsonSingletons.getParser().parse(reader);
+        try {
+            if (!file.exists())
+                return null;
+            FileReader reader = new FileReader(file);
+            JsonElement element = JsonSingletons.getParser().parse(reader);
+            reader.close();
+            return element;
         } catch (FileNotFoundException e) {
             LogUtils.getMainLogger().error("Could not find file", e);
         } catch (IOException e) {
@@ -43,12 +45,18 @@ public class FileUtils {
     }
 
     public static JSONObject fileToJSON(String path) {
-        try (FileReader reader = new FileReader(path)) {
+        try {
+            File file = new File(path);
+            if (!file.exists())
+                return null;
+
+            FileReader reader = new FileReader(file);
             StringBuilder builder = new StringBuilder();
             int code;
             while ((code = reader.read()) != -1) {
                 builder.append((char) code);
             }
+            reader.close();
             return new JSONObject(builder.toString());
         } catch (FileNotFoundException e) {
             LogUtils.getMainLogger().error("Could not find file " + path, e);
@@ -65,9 +73,16 @@ public class FileUtils {
     }
 
     public static void writeFile(String path, String content) {
-        try (FileWriter writer = new FileWriter(path)) {
+        try {
+            File file = new File(path);
+            if (!file.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                file.createNewFile();
+            }
+            FileWriter writer = new FileWriter(file);
             writer.write(content);
             writer.flush();
+            writer.close();
         } catch (IOException e) {
             LogUtils.getMainLogger().error("Could not save \"" + content + "\"", e);
         }

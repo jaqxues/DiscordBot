@@ -74,10 +74,10 @@ public class StringUtilsCommand implements BaseCommand {
                 if (code.endsWith(" ")) {
                     builder.append(" ");
                 }
-                String msg = builder.toString() +
-                        (errorBuilder.toString().equals("Errors:") ? "" : "\n\n" + errorBuilder.toString());
-                event.getChannel().sendMessage(msg).queue();
             }
+            String msg = builder.toString() +
+                    (errorBuilder.toString().equals("Errors:") ? "" : "\n\n" + errorBuilder.toString());
+            event.getChannel().sendMessage(msg).queue();
         } else if (str.startsWith("to unicode")) {
             str = str.substring(10).trim();
             StringBuilder builder = new StringBuilder();

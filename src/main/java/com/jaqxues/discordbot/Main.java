@@ -33,7 +33,7 @@ public class Main {
         // Get Configuration (Bot Token and Command Prefix)
         String token = getToken(args);
 
-        LogUtils.getMainLogger().info("Building JDA instance");
+        LogUtils.getMainLogger().debug("Building JDA instance");
         JDA jda;
         try {
             jda = new JDABuilder(AccountType.BOT)

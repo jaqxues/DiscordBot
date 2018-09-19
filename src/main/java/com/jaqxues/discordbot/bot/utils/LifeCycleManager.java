@@ -1,8 +1,10 @@
 package com.jaqxues.discordbot.bot.utils;
 
+import com.jaqxues.discordbot.bot.commands.CompileModPackCommand;
 import com.jaqxues.discordbot.utils.Constants;
 import com.jaqxues.discordbot.utils.FileUtils;
 import com.jaqxues.discordbot.utils.LogUtils;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
 import net.dv8tion.jda.core.JDA;
 
@@ -26,6 +28,8 @@ public class LifeCycleManager {
         JSONObject object = FileUtils.fileToJSON(Constants.SESSION_MANAGER_JSON);
         if (object == null)
             object = new JSONObject();
+        if (object.has("mp_defaults"))
+            CompileModPackCommand.setDefaultParams(object.getString("mp_defaults"));
 
         StatsManager.init(object.optJSONObject("Stats"));
 
@@ -46,11 +50,15 @@ public class LifeCycleManager {
 
     private static void saveJSON() {
         StatsManager.savedJson();
-        JSONObject jsonObject = new JSONObject()
+        JSONObject jsonObject = FileUtils.fileToJSON(Constants.SESSION_MANAGER_JSON);
+        if (jsonObject == null)
+            jsonObject = new JSONObject();
+        jsonObject
                 .put("Prefix", Variables.commandPrefix)
                 .put("LockLevel", Variables.lockLevel)
                 .put("Stats", StatsManager.getJSON())
-                .put("LastSaved", System.currentTimeMillis());
+                .put("LastSaved", System.currentTimeMillis())
+                .put("mp_defaults", CompileModPackCommand.getDefaultParams());
         FileUtils.writeFile(Constants.SESSION_MANAGER_JSON, jsonObject.toString());
     }
 }

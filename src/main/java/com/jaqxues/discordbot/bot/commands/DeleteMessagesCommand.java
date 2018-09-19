@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * This file was created by Jacques (jaqxues) in the Project DiscordBot.<br>
@@ -25,6 +26,7 @@ import java.util.List;
 public class DeleteMessagesCommand implements BaseCommand {
 
     private static Message getMessageByIds(JDA jda, long[] ids) {
+        System.out.println(Arrays.toString(ids));
         Guild guild = jda.getGuildById(ids[2]);
         if (guild == null)
             return null;
@@ -59,7 +61,8 @@ public class DeleteMessagesCommand implements BaseCommand {
         return Arrays.asList(
                 "=== id *<message_id>*----Self Explaining",
                 "=== id *<message_id> <channel_id>*----Self Explaining",
-                "=== id *<message_id> <channel_id> <guild_id>*----Self Explaining");
+                "=== id *<message_id> <channel_id> <guild_id>*----Self Explaining",
+                "=== *<number>*----Deletes <number> messages in the current channel. <number> needs to be < 100");
     }
 
     @Override
@@ -75,7 +78,7 @@ public class DeleteMessagesCommand implements BaseCommand {
     @Override
     public void onInvoke(@NotNull String str, MessageReceivedEvent event) {
         boolean confirm = !str.endsWith(".");
-        if (confirm)
+        if (!confirm)
             str = str.substring(0, str.length() - 1);
 
         if (str.startsWith("id ")) {
@@ -130,10 +133,11 @@ public class DeleteMessagesCommand implements BaseCommand {
         } else {
             try {
                 int i = Integer.parseInt(str);
+                System.out.print(i);
                 if (i <= 100) {
-                    DiscordUtils.deleteMessage(event.getMessage());
-                    for (Message message : event.getChannel().getHistory().retrieveFuture(i).complete())
-                        DiscordUtils.deleteMessage(message);
+                    DiscordUtils.deleteMessage(event.getMessage());event.getChannel().getIterableHistory().forEach(
+                            DiscordUtils::deleteMessage
+                    );
                     if (confirm)
                         MessageFactory.basicSuccessEmbed(
                                 event.getChannel(),

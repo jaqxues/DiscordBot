@@ -7,6 +7,7 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,5 +102,14 @@ public class LogUtils {
         public Ansi.FColor getAnsiColor() {
             return this.ansiColor;
         }
+    }
+
+    public static String stackToString(@NotNull Throwable t) {
+        StringBuilder builder = new StringBuilder();
+        for (StackTraceElement stack : t.getStackTrace()) {
+            builder.append("\n")
+                    .append(stack.toString());
+        }
+        return builder.toString();
     }
 }

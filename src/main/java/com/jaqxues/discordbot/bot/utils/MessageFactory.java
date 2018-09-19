@@ -1,5 +1,7 @@
 package com.jaqxues.discordbot.bot.utils;
 
+import com.jaqxues.discordbot.utils.LogUtils;
+
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.MessageChannel;
 
@@ -68,9 +70,16 @@ public class MessageFactory {
     }
 
     private static void addThrowableField(EmbedBuilder builder, Throwable t) {
+        builder.addBlankField(false);
+        String message = (t.getMessage() == null ? "No error Message Provided" : t.getMessage()) + " (" + t.getClass().getSimpleName() + ")";
+        String stack = LogUtils.stackToString(t);
+
+        if (stack.length() > 1024)
+            stack = stack.substring(0, 1021);
+        stack += "...";
         builder.addField(
-                t.getMessage(),
-                Arrays.toString(t.getStackTrace()),
+                message,
+                stack,
                 false
         );
     }

@@ -2,6 +2,7 @@ package com.jaqxues.discordbot.bot.commands;
 
 import com.jaqxues.discordbot.bot.utils.BaseCommand;
 import com.jaqxues.discordbot.bot.utils.MessageFactory;
+import com.jaqxues.discordbot.bot.utils.Variables;
 import com.jaqxues.discordbot.utils.Constants;
 import com.jaqxues.discordbot.utils.FileUtils;
 import com.jaqxues.discordbot.utils.LogUtils;
@@ -26,14 +27,21 @@ import java.util.Scanner;
 
 public class CompileModPackCommand implements BaseCommand {
 
-    private String defaultParams;
+    private static String defaultParams;
+    private static String example = "10.26.5.0 : Debug : Premium : 1.0.0.0 : Beta : Development : SignPack : Master : Adb Push";
 
     public CompileModPackCommand() {
         defaultParams = getDefaultParams();
     }
 
-    private static String getDefaultParams() {
-        return "";
+    public static String getDefaultParams() {
+        if (defaultParams == null || defaultParams.isEmpty())
+            defaultParams = example;
+        return defaultParams;
+    }
+
+    public static void setDefaultParams(String str) {
+        defaultParams = str;
     }
 
     private static String[] parseParams(String message) throws IllegalArgumentException {
@@ -63,8 +71,8 @@ public class CompileModPackCommand implements BaseCommand {
             // Pack Version
             result[3] = params[3];
 
-            // Beta or Release
-            if (params[4].isEmpty() || params[4].startsWith("r"))
+            // Beta or Release (prod)
+            if (params[4].isEmpty() || params[4].startsWith("r") || params[4].startsWith("p"))
                 result[4] = "2";
             else if (params[4].startsWith("b"))
                 result[4] = "1";
@@ -243,19 +251,35 @@ public class CompileModPackCommand implements BaseCommand {
             MessageFactory.basicSuccessEmbed(
                     event.getChannel(),
                     "ModulePack Compiler Command Example",
-                    "\n\n```.mp 10.26.5.0 : Debug : Premium : 1.0.0.0 : Beta : Development : SignPack : Master : Adb Push```"
+                    "\n\n```" + Variables.commandPrefix + getAlias() + example + "```"
             );
             return;
         } else if (str.startsWith("set default")) {
-            str = str.substring(11);
-            // Handle Input
+            str = str.substring(11).trim();
+            try {
+                parseParams(str);
+            } catch (IllegalArgumentException e) {
+                System.out.print("Executed");
+                MessageFactory.errorEmbed(
+                        event.getChannel(),
+                        "IllegalArgumentException",
+                        "Could not parse input. Not saving defaults",
+                        e
+                );
+                return;
+            }
             defaultParams = str;
+            MessageFactory.basicSuccessEmbed(
+                    event.getChannel(),
+                    "Success",
+                    "Successfully saved the default params"
+            );
             return;
         } else if (str.startsWith("get default")) {
             MessageFactory.basicSuccessEmbed(
                     event.getChannel(),
                     "ModulePack Compile Command Default Parameters",
-                    "\n\n\n\n```.mp " + getDefaultParams() + "```"
+                    "\n\n\n\n```" + Variables.commandPrefix + getAlias() + " " + getDefaultParams() + "```"
             );
             return;
         } else if (str.startsWith("d")) {

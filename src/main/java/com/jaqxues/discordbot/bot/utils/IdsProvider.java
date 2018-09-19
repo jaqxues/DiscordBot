@@ -54,17 +54,17 @@ public class IdsProvider {
                 new TypeToken<Map<Integer, List<Long>>>() {
                 }.getType()
         );
-        LogUtils.getMainLogger().error("Successfully loaded LockIdsMap");
+        LogUtils.getMainLogger().debug("Successfully loaded LockIdsMap");
     }
 
     private static void lockIdsMapDefault() {
-        LogUtils.getMainLogger().debug("Unable to load lockIdsMap, loading default settings");
+        LogUtils.getMainLogger().info("Unable to load lockIdsMap, loading default settings");
         lockIdsMap = new HashMap<>();
         lockIdsMap.put(0, Collections.singletonList(OWNER_USER_ID));
         lockIdsMap.put(1, Collections.singletonList(OWNER_GUILD_ID));
         lockIdsMap.put(2, lockIdsMap.get(0));
         lockIdsMap.put(3, lockIdsMap.get(1));
-        LogUtils.getMainLogger().debug("Loaded default settings.");
+        LogUtils.getMainLogger().info("Loaded default settings.");
     }
 
     public static boolean checkLock(Integer lockLevel, MessageReceivedEvent event) {
