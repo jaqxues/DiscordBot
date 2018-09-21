@@ -73,9 +73,9 @@ public class CompileModPackCommand implements BaseCommand {
 
             // Beta or Release (prod)
             if (params[4].isEmpty() || params[4].startsWith("r") || params[4].startsWith("p"))
-                result[4] = "2";
-            else if (params[4].startsWith("b"))
                 result[4] = "1";
+            else if (params[4].startsWith("b"))
+                result[4] = "2";
             else
                 throw new IllegalArgumentException();
 
@@ -251,7 +251,7 @@ public class CompileModPackCommand implements BaseCommand {
             MessageFactory.basicSuccessEmbed(
                     event.getChannel(),
                     "ModulePack Compiler Command Example",
-                    "\n\n```" + Variables.commandPrefix + getAlias() + example + "```"
+                    "\n\n```" + Variables.commandPrefix + getAlias() + " " + example + "```"
             );
             return;
         } else if (str.startsWith("set default")) {

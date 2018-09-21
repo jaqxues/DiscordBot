@@ -23,7 +23,7 @@ public class LifeCycleManager {
      * @param jda The {@link JDA} instance created in {@link com.jaqxues.discordbot.Main#main(String[])}
      */
     public static void onStartUp(JDA jda) {
-        DiscordUtils.getOwnerBotChannel(jda).sendMessage("Started Bot. (Version: " + Constants.BOT_VERSION + ")").queue();
+        MessageFactory.basicSuccessEmbed(DiscordUtils.getOwnerBotChannel(jda), "Started Bot", "Successfully started Bot. Version: " + Constants.BOT_VERSION);
         IdsProvider.init();
         JSONObject object = FileUtils.fileToJSON(Constants.SESSION_MANAGER_JSON);
         if (object == null)
